@@ -14,20 +14,29 @@
 		<th>Description</th>
 		<th>Actions</th>
 	</tr>
+	
 	<% @offers.each do | offer| %>
 
 	<tr>
 		<td>
+
 			<%= offer.title %>
+		
 		</td>
 		<td>
+		
 			<%= offer.location %>
+		
 		</td>
 		<td>
+		
 			<%= offer.description %>
+		
 		</td>		
 		<td>
-			<%= link_to 'Apply', url_for(:job_offers, :apply, :offer_id => offer.id), :class => "btn btn-primary" %>
+
+			<%= button_to 'Apply', url_for(:job_offers, :apply, :offer_id => offer.id), :id => "apply_btn", :class => "btn btn-primary" %>
+		
 		</td>		
 	</tr>
 

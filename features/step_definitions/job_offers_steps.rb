@@ -33,6 +33,10 @@ Then(/^I should see "(.*?)" in My Offers$/) do |content|
   page.should have_content(content)
 end
 
+Then(/^I should see "(.*?)"$/) do |button_menu|
+  page.should have_content(button_menu)
+end
+
 
 Then(/^I should not see "(.*?)" in My Offers$/) do |content|
   visit '/job_offers/my'

@@ -1,0 +1,36 @@
+<h1>My Applications</h1>
+
+<table class="table table-bordered">
+	<tr>
+		<th>Title</th>
+		<th>Location</th>
+		<th>Description</th>
+		<th>Actions</th>
+	</tr>
+	
+	<% @applications.each do |application| %>
+	
+	<tr>
+		<td>
+
+			<%= application.offer_title %>
+
+		</td>
+		<td>
+
+			<%= application.offer_location %>
+
+		</td>
+		<td>
+
+			<%= application.offer_description %>
+
+		</td>		
+		<td>
+
+		</td>		
+	</tr>
+
+  <% end %>
+
+</table>

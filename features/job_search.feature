@@ -16,4 +16,4 @@ Feature: Job Offer Search Results
 
   Scenario: Search for a Smalltalk Job Offer
     When I search for "Smalltalk" job offer
-    Then I should see the message "No results available for:" "Smalltalk" in Search Results
+    Then I should see the message "No results available for: " "Smalltalk" in Search Results

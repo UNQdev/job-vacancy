@@ -1,29 +1,61 @@
-Given(/^only a "(.*?)" offer exists in the offers list$/) do | job_title |
-  @job_offer = JobOffer.new
-  @job_offer.owner = User.first
-  @job_offer.title = job_title
-  @job_offer.location = 'a nice job'
-  @job_offer.description = 'a nice job'
-  @job_offer.save
+Given(/^Given an applicant user registered$/) do
+  visit (APPLICANT_REGISTRATION_PAGE)
+  # expect(@browser.url).to match Regexp.new(APPLICANT_REGISTRATION_PAGE)
+
+  page.should have_content('Registration')
+
+  find_by_id("user_name")
+  find_by_id("user_email")
+  find_by_id("user_password")
+  find_by_id("user_password_confirmation")
+
+  fill_in('user_name', :with => 'Applicant')
+  fill_in('user_email', :with => 'applicant@test.com')
+  fill_in('user_password', :with => 'Passw0rd')
+  fill_in('user_password_confirmation', :with => 'Passw0rd')
+
+  has_button?('Create').should eq true
+  click_button('Create')
 end
 
-Given(/^I access the offers list page$/) do
-  visit '/job_offers'
+Given(/^I am logged in as applicant$/) do
+
+  step 'Given an applicant user registered'
+  visit (LOGIN_PAGE)
+
+  page.has_title? "Login"
+
+  find_by_id("user_email")
+  find_by_id("user_password")
+
+  fill_in('user_email', :with => 'applicant@test.com')
+  fill_in('user_password', :with => 'Passw0rd')
+  
+  has_button?('Login').should eq true
+  click_button('Login')
+  
 end
 
-When(/^I apply$/) do
-  click_link 'Apply'
-  fill_in('job_application[applicant_email]', :with => 'applicant@test.com')
+Given(/^I am at Current Job Offers page$/) do
+  visit (JOB_OFFERS_PAGE)
+  page.has_title? "Current Job Offers"  
+end
+
+
+When(/^I apply for a Web Programmer job offer$/) do
   click_button('Apply')
 end
 
-Then(/^I should receive a mail with offerer info$/) do
-  mail_store = "#{Padrino.root}/tmp/emails"
-  file = File.open("#{mail_store}/applicant@test.com", "r")
-  content = file.read
-  content.include?(@job_offer.title).should be true
-  content.include?(@job_offer.location).should be true
-  content.include?(@job_offer.description).should be true
-  content.include?(@job_offer.owner.email).should be true
-  content.include?(@job_offer.owner.name).should be true
+Then(/^I should see You have applied for: "(.*?)"$/) do |job_offer|
+  page.should have_content('You have applied for: ' + job_offer)
+end
+
+When(/^I browse to My Applications$/) do
+  visit (HOME_PAGE)
+  page.should have_content('My Applications')
+  click_link('My Applications')
+end
+
+Then(/^It should list "(.*?)"$/) do |offer_title|
+  page.should have_content(offer_title)
 end

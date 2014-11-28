@@ -20,6 +20,18 @@ JobVacancy::App.controllers :job_offers do
     render 'job_offers/list'
   end
 
+  get :applicants, :with => :offer_id do
+    user = User.get(session[:current_user])
+    @applications = JobApplication.all(:job_offer_id => :offer_id)
+    render 'job_offers/applicants'
+  end
+
+  get :applications do
+    user= User.get(session[:current_user])
+    @applications = JobApplication.all(:user => user)
+    render 'job_offers/applications'
+  end
+
   get :edit, :with =>:offer_id  do
     @job_offer = JobOffer.get(params[:offer_id])
     # ToDo: validate the current user is the owner of the offer
@@ -30,21 +42,33 @@ JobVacancy::App.controllers :job_offers do
     @job_offer = JobOffer.get(params[:offer_id])
     @job_application = JobApplication.new
     # ToDo: validate the current user is the owner of the offer
-    render 'job_offers/apply'
-  end
-
-  post :search do
-  @offers = JobOffer.all(:title.like => "%#{params[:q]}%")
-  if @offers.length<=0
-    flash.now[:error] = "No results available for: #{params[:q]}"
-  else
-    flash.now[:success] = "Total Results: #{@offers.length} for #{params[:q]}"
-  end
-  render 'job_offers/search'
+    render 'job_offers/list'
   end
 
   post :apply, :with => :offer_id do
     @job_offer = JobOffer.get(params[:offer_id])    
+    @user= User.get(session[:current_user])
+    @job_application = JobApplication.create_for(@job_offer, @user)
+    if @job_application.save
+      flash[:success] = "You have applied for: #{@job_offer.title}"
+    else
+      flash.now[:error] = "Application for: #{@job_offer.title} not succed"
+    end
+    redirect '/job_offers'
+  end
+
+  post :search do
+    @offers = JobOffer.all(:title.like => "%#{params[:q]}%")
+    if @offers.length<=0
+      flash.now[:error] = "No results available for: #{params[:q]}"
+    else
+      flash.now[:success] = "Total Results: #{@offers.length} for #{params[:q]}"
+    end
+    render 'job_offers/list'
+  end
+
+  post :apply, :with => :offer_id do
+    @job_offer = JobOffer.get(params[:offer_id])
     applicant_email = params[:job_application][:applicant_email]
     @job_application = JobApplication.create_for(applicant_email, @job_offer)
     @job_application.process

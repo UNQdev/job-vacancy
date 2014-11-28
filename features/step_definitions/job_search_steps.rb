@@ -15,13 +15,13 @@ When(/^I search for "(.*?)" job offer$/) do |offer_title|
 end
 
 Then(/^I should see Total Results: "(.*?)" for "(.*?)" in Search Results$/) do |results_qtty, search_term|
-  page.should have_content('Search Results')
+  page.should have_content('Current Job Offers')
   page.should have_content(results_qtty)
   page.should have_content(search_term)
 end
 
 Then(/^I should see the message "(.*?)" "(.*?)" in Search Results$/) do |error_message, search_term|
-  page.should have_content('Search Results')
+  page.should have_content('Current Job Offers')
   page.should have_content(error_message)
   page.should have_content(search_term)
 end
